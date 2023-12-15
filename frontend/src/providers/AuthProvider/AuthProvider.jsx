@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { AuthContext } from "../../contexts/AuthContext/AuthContext";
-import { onAuthStateChanged } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
 import { auth } from "../../firebase/firebase.config";
 
 const AuthProvider = ({ children }) => {
@@ -16,7 +21,19 @@ const AuthProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
-  const authInfo = { user, name: "shuvo" };
+  const createAcc = (email, password) => {
+    return createUserWithEmailAndPassword(auth, email, password);
+  };
+
+  const login = (email, password) => {
+    return signInWithEmailAndPassword(auth, email, password);
+  };
+
+  const logout = () => {
+    return signOut(auth);
+  };
+
+  const authInfo = { user, createAcc, login, logout };
 
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
