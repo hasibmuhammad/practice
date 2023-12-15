@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../hooks/UseAuthContext";
+import axios from "axios";
 
 const Register = () => {
   const { createAcc, update } = useAuthContext();
@@ -22,7 +23,19 @@ const Register = () => {
           update({ displayName: name })
             .then(() => {
               console.log("updated");
-              navigate("/");
+              // Generate access token
+              axios
+                .post(
+                  "http://localhost:5000/jwt",
+                  { email: res.user.email },
+                  { withCredentials: true }
+                )
+                .then((response) => {
+                  if (response.data.success) {
+                    navigate("/");
+                  }
+                })
+                .catch((error) => console.log(error));
             })
             .catch((error) => console.log("Update failed!", error));
         }

@@ -1,5 +1,6 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../hooks/UseAuthContext";
+import axios from "axios";
 
 const Navbar = () => {
   const { user, logout } = useAuthContext();
@@ -7,7 +8,12 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout()
-      .then(() => navigate("/"))
+      .then(() => {
+        axios
+          .get("http://localhost:5000/logout", { withCredentials: true })
+          .then((res) => console.log(res.data))
+          .catch((error) => console.log(error));
+      })
       .catch((error) => console.log(error));
   };
 

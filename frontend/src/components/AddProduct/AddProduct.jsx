@@ -1,4 +1,11 @@
+import axios from "axios";
+import { useAuthContext } from "../../hooks/UseAuthContext";
+import { useNavigate } from "react-router-dom";
+
 const AddProduct = () => {
+  const { user } = useAuthContext();
+  const navigate = useNavigate();
+
   const handleAddProduct = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -7,9 +14,18 @@ const AddProduct = () => {
     const price = form.price.value;
     const description = form.description.value;
 
-    const productObj = { name, url, price, description };
+    const productObj = { name, url, price, description, email: user.email };
 
     // Send the product to server to insert into the mongodb
+    axios
+      .post("http://localhost:5000/add", productObj, { withCredentials: true })
+      .then((response) => {
+        if (response.data) {
+          form.reset();
+          console.log(response.data);
+        }
+      })
+      .catch((error) => console.log(error));
   };
   return (
     <div className="hero min-h-screen">

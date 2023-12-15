@@ -5,6 +5,7 @@ import Products from "../components/Products/Products";
 import AddProduct from "../components/AddProduct/AddProduct";
 import Login from "../components/Login/Login";
 import Register from "../components/Register/Register";
+import PrivateRoute from "./PrivateRoute";
 
 export const router = createBrowserRouter([
   {
@@ -17,7 +18,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "products",
-        element: <Products />,
+        element: (
+          <PrivateRoute>
+            <Products />
+          </PrivateRoute>
+        ),
       },
       {
         path: "login",
@@ -29,7 +34,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "add",
-        element: <AddProduct />,
+        element: (
+          <PrivateRoute>
+            <AddProduct />
+          </PrivateRoute>
+        ),
       },
     ],
   },

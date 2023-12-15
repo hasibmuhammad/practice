@@ -1,13 +1,11 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../hooks/UseAuthContext";
+import axios from "axios";
 
 const Login = () => {
   const { user, login, loading } = useAuthContext();
   const navigate = useNavigate();
-
-  if (user) {
-    navigate("/");
-  }
+  const location = useLocation();
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -20,7 +18,21 @@ const Login = () => {
     login(email, password)
       .then((res) => {
         if (res.user) {
-          navigate("/");
+          // generate and set the cookie
+          axios
+            .post(
+              "http://localhost:5000/jwt",
+              {
+                email: res.user.email,
+              },
+              { withCredentials: true }
+            )
+            .then((response) => {
+              if (response.data.success) {
+                navigate(location.state ? location.state : "/");
+              }
+            })
+            .catch((error) => console.log(error));
         }
       })
       .catch((error) => console.log(error));
