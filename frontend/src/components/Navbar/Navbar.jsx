@@ -1,8 +1,15 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../hooks/UseAuthContext";
 
 const Navbar = () => {
-  const { user } = useAuthContext();
+  const { user, logout } = useAuthContext();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout()
+      .then(() => navigate("/"))
+      .catch((error) => console.log(error));
+  };
 
   return (
     <div className="max-w-7xl mx-auto flex items-center justify-between my-10">
@@ -46,7 +53,13 @@ const Navbar = () => {
           </NavLink>
         )}
         {user ? (
-          <Link>Log Out</Link>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="btn btn-warning"
+          >
+            Log Out
+          </button>
         ) : (
           <NavLink
             className={({ isActive }) =>

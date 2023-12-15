@@ -1,15 +1,40 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuthContext } from "../../hooks/UseAuthContext";
 
 const Login = () => {
+  const { user, login, loading } = useAuthContext();
+  const navigate = useNavigate();
+
+  if (user) {
+    navigate("/");
+  }
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+    const email = form.email.value;
+    const password = form.password.value;
+
+    // login here
+    login(email, password)
+      .then((res) => {
+        if (res.user) {
+          navigate("/");
+        }
+      })
+      .catch((error) => console.log(error));
+  };
   return (
     <div className="hero min-h-screen">
       <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
-        <form className="card-body">
+        <form className="card-body" onSubmit={handleLogin}>
           <div className="form-control">
             <label className="label">
               <span className="label-text">Email</span>
             </label>
             <input
+              name="email"
               type="email"
               placeholder="email"
               className="input input-bordered"
@@ -21,6 +46,7 @@ const Login = () => {
               <span className="label-text">Password</span>
             </label>
             <input
+              name="password"
               type="password"
               placeholder="password"
               className="input input-bordered"
