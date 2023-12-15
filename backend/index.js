@@ -96,6 +96,15 @@ const run = async () => {
       // console.log(product);
     });
 
+    // Get all products
+    app.get("/products", async (req, res) => {
+      const email = req.query.email;
+      const query = { email };
+      const products = await prodCollection.find(query).toArray();
+
+      res.send(products);
+    });
+
     // Upon Logout clear the cookies
     app.get("/logout", async (req, res) => {
       res.clearCookie("token").send("Cookie Cleared!");

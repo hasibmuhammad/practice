@@ -6,6 +6,7 @@ import AddProduct from "../components/AddProduct/AddProduct";
 import Login from "../components/Login/Login";
 import Register from "../components/Register/Register";
 import PrivateRoute from "./PrivateRoute";
+import axios from "axios";
 
 export const router = createBrowserRouter([
   {
