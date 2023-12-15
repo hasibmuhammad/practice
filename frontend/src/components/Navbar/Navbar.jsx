@@ -31,6 +31,14 @@ const Navbar = () => {
         >
           Add Product
         </NavLink>
+        <NavLink
+          className={({ isActive }) =>
+            isActive && "text-orange-600 font-bold border-b-4 border-orange-600"
+          }
+          to="/login"
+        >
+          Login
+        </NavLink>
       </div>
     </div>
   );
