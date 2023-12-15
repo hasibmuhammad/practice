@@ -2,7 +2,7 @@ import { Link, NavLink } from "react-router-dom";
 
 const Navbar = () => {
   return (
-    <div className="max-w-7xl mx-auto flex items-center justify-between">
+    <div className="max-w-7xl mx-auto flex items-center justify-between my-10">
       <div className="font-bold text-3xl uppercase tracking-widest">
         <Link to="/">
           L<span className="text-orange-500">o</span>g

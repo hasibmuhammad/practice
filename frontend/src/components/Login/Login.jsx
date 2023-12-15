@@ -31,7 +31,7 @@ const Login = () => {
             <button className="btn btn-primary">Login</button>
           </div>
         </form>
-        <div>
+        <div className="text-center mb-4">
           <p>
             Don't have an account?{" "}
             <Link to="/register" className="text-blue-400">
