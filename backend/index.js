@@ -97,8 +97,12 @@ const run = async () => {
     });
 
     // Get all products
-    app.get("/products", async (req, res) => {
+    app.get("/products", verifyToken, async (req, res) => {
       const email = req.query.email;
+
+      if (req.user.email !== email)
+        return res.status(403).send({ message: "Forbidden Access" });
+
       const query = { email };
       const products = await prodCollection.find(query).toArray();
 

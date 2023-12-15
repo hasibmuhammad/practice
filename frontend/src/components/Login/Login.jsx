@@ -3,7 +3,7 @@ import { useAuthContext } from "../../hooks/UseAuthContext";
 import axios from "axios";
 
 const Login = () => {
-  const { user, login, loading } = useAuthContext();
+  const { user, login, loading, loginWithGoogle } = useAuthContext();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -33,6 +33,16 @@ const Login = () => {
               }
             })
             .catch((error) => console.log(error));
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const handleLoginWithGoogle = () => {
+    loginWithGoogle()
+      .then((res) => {
+        if (res.user) {
+          navigate(location.state ? location.state : "/");
         }
       })
       .catch((error) => console.log(error));
@@ -67,6 +77,15 @@ const Login = () => {
           </div>
           <div className="form-control mt-6">
             <button className="btn btn-primary">Login</button>
+          </div>
+          <div className="form-control">
+            <button
+              onClick={handleLoginWithGoogle}
+              type="button"
+              className="btn btn-primary btn-outline"
+            >
+              Login With Google
+            </button>
           </div>
         </form>
         <div className="text-center mb-4">
