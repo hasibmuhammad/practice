@@ -1,6 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuthContext } from "../../hooks/UseAuthContext";
 
 const Register = () => {
+  const { createAcc, update } = useAuthContext();
+  const navigate = useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -11,7 +15,19 @@ const Register = () => {
 
     const accInfo = { name, email, password };
 
-    // Create account with firebox - email and password
+    // Create account with firebase - email and password
+    createAcc(email, password)
+      .then((res) => {
+        if (res.user) {
+          update({ displayName: name })
+            .then(() => {
+              console.log("updated");
+              navigate("/");
+            })
+            .catch((error) => console.log("Update failed!", error));
+        }
+      })
+      .catch((error) => console.log(error));
   };
   return (
     <div className="hero min-h-screen">
