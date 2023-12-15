@@ -24,14 +24,14 @@ const Products = () => {
               <img
                 className="w-full h-48 object-cover"
                 src={product.url}
-                alt="Shoes"
+                alt={product.name}
               />
             </figure>
             <div className="card-body">
-              <h2 className="card-title">Shoes!</h2>
-              <p>If a dog chews shoes whose shoes does he choose?</p>
+              <h2 className="card-title">{product.name}</h2>
+              <p>{product.description}</p>
               <div className="card-actions justify-end">
-                <button className="btn btn-primary">Buy Now</button>
+                <button className="btn btn-primary uppercase">Buy Now</button>
               </div>
             </div>
           </div>
