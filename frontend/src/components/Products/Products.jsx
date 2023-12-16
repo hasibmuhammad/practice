@@ -8,9 +8,12 @@ const Products = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/products?email=${user.email}`, {
-        withCredentials: true,
-      })
+      .get(
+        `https://practice-eight-phi.vercel.app/products?email=${user.email}`,
+        {
+          withCredentials: true,
+        }
+      )
       .then((res) => setProducts(res.data))
       .catch((error) => console.log(error));
   }, []);
