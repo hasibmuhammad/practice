@@ -9,7 +9,9 @@ import cookieParser from "cookie-parser";
 const app = express();
 
 // middleware
-app.use(cors({ origin: ["http://localhost:5173"], credentials: true }));
+app.use(
+  cors({ origin: ["https://practice-25239.web.app"], credentials: true })
+);
 app.use(express.json());
 app.use(cookieParser());
 
@@ -75,7 +77,7 @@ const run = async () => {
       res
         .cookie("token", token, {
           httpOnly: true,
-          secure: false,
+          secure: true,
         })
         .send({ success: true });
     });
