@@ -11,6 +11,8 @@ const Products = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(0);
 
+  const [cart, setCart] = useState([]);
+
   const totalPage = Math.ceil(totalItems / itemsPerPage);
 
   const pages = [...Array(totalPage).keys()];
@@ -36,6 +38,7 @@ const Products = () => {
 
   const handlePerPageChange = (e) => {
     setItemsPerPage(parseInt(e.target.value));
+    setCurrentPage(0);
   };
 
   const handlePrevious = () => {
@@ -45,16 +48,44 @@ const Products = () => {
   };
 
   const handleNext = () => {
-    console.log(currentPage, totalPage);
     if (currentPage < totalPage - 1) {
       setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handleAddToCart = (id) => {
+    // If the cart is empty - just add to the cart
+    if (cart.length === 0) {
+      setCart([...cart, { id: id, quantity: 1 }]);
+    }
+
+    // If the cart not empty
+    if (cart.length > 0) {
+      // finding already in the cart or not
+      const alreadyInCartItem = cart.find((c) => {
+        if (c.id === id) {
+          return (c.quantity += 1);
+        }
+      });
+
+      // If already in the cart then
+      if (alreadyInCartItem) {
+        // create the new cart except the newly added duplicate cart item
+        const newCart = cart.filter((c) => c.id !== alreadyInCartItem.id);
+
+        // Set the new cart
+        setCart([...newCart, alreadyInCartItem]);
+      }
+      // Already not in the cart
+      else {
+        setCart([...cart, { id: id, quantity: 1 }]);
+      }
     }
   };
 
   if (products.length === 0) {
     return <p className="text-center">No Products Available!</p>;
   }
-
   return (
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 max-w-7xl mx-auto my-20">
@@ -81,8 +112,11 @@ const Products = () => {
               </div> */}
               </div>
               {/* Overlay */}
-              <div className="overlay absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-90 group-hover:bg-black">
-                <button className="btn btn-primary uppercase">
+              <div className="overlay absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-95 group-hover:bg-black">
+                <button
+                  onClick={() => handleAddToCart(product._id)}
+                  className="btn btn-warning uppercase"
+                >
                   Add To Cart
                 </button>
               </div>

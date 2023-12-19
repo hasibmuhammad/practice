@@ -48,6 +48,16 @@ const Navbar = () => {
         >
           Products
         </NavLink>
+        <NavLink
+          className={({ isActive }) =>
+            isActive
+              ? "text-orange-600 font-bold border-b-4 border-orange-600"
+              : ""
+          }
+          to="/cart"
+        >
+          My Cart
+        </NavLink>
         {user && (
           <NavLink
             className={({ isActive }) =>
