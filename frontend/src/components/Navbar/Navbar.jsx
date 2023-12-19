@@ -10,7 +10,7 @@ const Navbar = () => {
     logout()
       .then(() => {
         axios
-          .get("https://practice-eight-phi.vercel.app/logout", {
+          .get("http://localhost:5000/logout", {
             withCredentials: true,
           })
           .then((res) => console.log(res.data))

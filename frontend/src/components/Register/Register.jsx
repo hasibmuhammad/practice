@@ -26,7 +26,7 @@ const Register = () => {
               // Generate access token
               axios
                 .post(
-                  "https://practice-eight-phi.vercel.app/jwt",
+                  "http://localhost:5000/jwt",
                   { email: res.user.email },
                   { withCredentials: true }
                 )

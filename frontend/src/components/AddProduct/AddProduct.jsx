@@ -18,7 +18,7 @@ const AddProduct = () => {
 
     // Send the product to server to insert into the mongodb
     axios
-      .post("https://practice-eight-phi.vercel.app/add", productObj, {
+      .post("http://localhost:5000/add", productObj, {
         withCredentials: true,
       })
       .then((response) => {

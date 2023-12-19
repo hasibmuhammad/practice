@@ -10,7 +10,10 @@ const app = express();
 
 // middleware
 app.use(
-  cors({ origin: ["https://practice-25239.web.app"], credentials: true })
+  cors({
+    origin: ["https://practice-25239.web.app", "http://localhost:5173"],
+    credentials: true,
+  })
 );
 app.use(express.json());
 app.use(cookieParser());
@@ -77,7 +80,8 @@ const run = async () => {
       res
         .cookie("token", token, {
           httpOnly: true,
-          secure: true,
+          secure: false,
+          // sameSite: "none",
         })
         .send({ success: true });
     });
@@ -101,14 +105,23 @@ const run = async () => {
     // Get all products
     app.get("/products", verifyToken, async (req, res) => {
       const email = req.query.email;
+      const currentPage = parseInt(req.query.page);
+      const size = parseInt(req.query.size);
+
+      console.log(currentPage, size);
 
       if (req.user.email !== email)
         return res.status(403).send({ message: "Forbidden Access" });
 
       const query = { email };
-      const products = await prodCollection.find(query).toArray();
+      const products = await prodCollection
+        .find(query)
+        .skip(currentPage * size)
+        .limit(size)
+        .toArray();
+      const count = await prodCollection.countDocuments(query);
 
-      res.send(products);
+      res.send({ products, count });
     });
 
     // Upon Logout clear the cookies

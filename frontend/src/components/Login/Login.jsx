@@ -21,7 +21,7 @@ const Login = () => {
           // generate and set the cookie
           axios
             .post(
-              "https://practice-eight-phi.vercel.app/jwt",
+              "http://localhost:5000/jwt",
               {
                 email: res.user.email,
               },
