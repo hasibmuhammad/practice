@@ -1,4 +1,4 @@
-import { MongoClient, ServerApiVersion } from "mongodb";
+import { MongoClient, ObjectId, ServerApiVersion } from "mongodb";
 import express from "express";
 import dotenv from "dotenv";
 dotenv.config();
@@ -66,8 +66,9 @@ const run = async () => {
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
 
-    // create collection under db
+    // cllections under db
     const prodCollection = client.db("practiceDB").collection("prods");
+    const cartCollection = client.db("practiceDB").collection("cart");
 
     // jwt
     app.post("/jwt", async (req, res) => {
@@ -128,6 +129,82 @@ const run = async () => {
     app.get("/logout", async (req, res) => {
       res.clearCookie("token").send("Cookie Cleared!");
     });
+
+    // Cart
+    app.post("/addtocart", verifyToken, async (req, res) => {
+      const { newCart } = await req.body;
+      const email = req.query.email;
+      if (req.user.email !== email) {
+        return res.status(403).send({ message: "Forbidden Access" });
+      }
+
+      // setting the id to the objectid for mongodb
+      newCart._id = new ObjectId(newCart._id);
+
+      // find the product in the cartcollection by the id
+      const cartRes = await cartCollection.findOne({ _id: newCart._id });
+      if (!cartRes) {
+        // Not in the cart
+        const result = await cartCollection.insertOne(newCart);
+
+        res.send(result);
+      } else {
+        // Already in the cart
+        const update = await cartCollection.updateOne(
+          { _id: cartRes._id },
+          { $set: { quantity: cartRes.quantity + 1 } },
+          { upsert: false }
+        );
+
+        res.send(update);
+      }
+    });
+
+    // get cart
+    app.get("/cart", verifyToken, async (req, res) => {
+      const email = req.query.email;
+
+      if (email !== req.user.email) {
+        return res.status(403).send({ message: "Forbidden Access" });
+      }
+
+      const result = await cartCollection.find({ email }).toArray();
+
+      // res.send(result);
+
+      // console.log(result);
+
+      let cartProducts = [];
+      for (let i = 0; i < result.length; i++) {
+        let cartItem = result[i];
+        let cartId = cartItem._id;
+        let cartQty = cartItem.quantity;
+
+        // Fetch the product by id
+        let prod = prodCollection
+          .find({ _id: cartId })
+          .project({ _id: 0, name: 1, url: 1, price: 1, description: 1 });
+
+        for await (const doc of prod) {
+          doc._id = cartId;
+          doc.quantity = cartQty;
+
+          cartProducts.push(doc);
+        }
+      }
+
+      res.send(cartProducts);
+    });
+
+    // get product by id
+
+    // app.get("/productbyid", verifyToken, async (req, res) => {
+    //   const email = req.query.email;
+
+    //   if (email !== req.user.email) {
+    //     return res.status(403).send({ message: "Forbidden Access" });
+    //   }
+    // });
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();

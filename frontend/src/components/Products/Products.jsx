@@ -12,6 +12,7 @@ const Products = () => {
   const [currentPage, setCurrentPage] = useState(0);
 
   const [cart, setCart] = useState([]);
+  const [savedCart, setSavedCart] = useState([]);
 
   const totalPage = Math.ceil(totalItems / itemsPerPage);
 
@@ -58,7 +59,6 @@ const Products = () => {
     if (cart.length === 0) {
       setCart([...cart, { id: id, quantity: 1 }]);
     }
-
     // If the cart not empty
     if (cart.length > 0) {
       // finding already in the cart or not
@@ -67,12 +67,10 @@ const Products = () => {
           return (c.quantity += 1);
         }
       });
-
       // If already in the cart then
       if (alreadyInCartItem) {
         // create the new cart except the newly added duplicate cart item
         const newCart = cart.filter((c) => c.id !== alreadyInCartItem.id);
-
         // Set the new cart
         setCart([...newCart, alreadyInCartItem]);
       }
@@ -81,6 +79,20 @@ const Products = () => {
         setCart([...cart, { id: id, quantity: 1 }]);
       }
     }
+
+    // For backend
+    const newCart = { email: user.email, _id: id, quantity: 1 };
+
+    axios
+      .post(
+        `http://localhost:5000/addtocart?email=${user.email}&id=${id}`,
+        { newCart },
+        {
+          withCredentials: true,
+        }
+      )
+      .then((res) => console.log(res))
+      .catch((error) => console.log(error));
   };
 
   if (products.length === 0) {
